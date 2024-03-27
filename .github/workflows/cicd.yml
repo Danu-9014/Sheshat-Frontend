@@ -14,17 +14,17 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t integrationninjas/sheshat-frontend .
+        run: docker build -t danushanaotunna/sheshat-frontend .
       - name: Publish image to docker hub
-        run: docker push integrationninjas/sheshat-frontend:latest
+        run: docker push danushanaotunna/sheshat-frontend:latest
 
   deploy: 
     needs: build
     runs-on: aws-ec2    
     steps:
       - name: Pull image from docker hub
-        run: docker pull integrationninjas/sheshat-frontend:latest 
+        run: docker pull danushanaotunna/sheshat-frontend:latest 
       - name: Delete Old Container
         run: docker rm -f reactContainer
       - name: Run docker container
-        run: docker run -d -p 3000:80 --name reactContainer integrationninjas/sheshat-frontend   
+        run: docker run -d -p 3000:80 --name reactContainer danushanaotunna/sheshat-frontend   

@@ -36,12 +36,12 @@ const ChildDetail = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
+                  {users?.map((user) => (
                     <tr key={user.id}>
-                      <td>{user.name}</td>
-                      <td>{user.book}</td>
-                      <td>{user.pages}</td>
-                      <td>{user.author}</td>
+                      <td>{user?.name}</td>
+                      <td>{user?.readingBook?.name}</td>
+                      <td>{user?.noOfPagesRead}</td>
+                      <td>{user?.readingBook?.author}</td>
                     </tr>
                   ))}
                   {/* <tr>

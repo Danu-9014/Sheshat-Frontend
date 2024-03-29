@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
+import Timer from "../components/Timer";
 
 const ChildBook = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -42,51 +43,55 @@ const ChildBook = () => {
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
-  },[]);
+  });
 
-  async function UpdateUserBook(
-    bookId,
-    name,
-    noOfPages,
-    category,
-    author,
-    rating
-  ) {
-    const userData = {
-      id: id,
-      name: uname,
-      userType: userType,
-      createdDate: createdDate,
-      password: password,
-      readingBook: {
-        bookId: bookId,
-        name: name,
-        noOfPages: noOfPages,
-        category: category,
-        author: author,
-        rating: rating,
-      },
-    };
-    // console.log(userData,"user");
-    console.log(userData, "userdata");
-    axios
-      .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
-      .then(function (response) {
-        // console.log(response.data.data.userType);
-        swal({
-          text: "Added Successful",
-          icon: "success",
-          buttons: {
-            cancel: { text: "Cancel" },
-            confirm: { text: "Ok" },
-          },
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-        alert("Added Failed");
+async function UpdateUserBook(
+  id,
+  uname,
+  userType,
+  createdDate,
+  password,
+  bookId,
+  name,
+  noOfPages,
+  category,
+  author,
+  rating
+) {
+  const userData = {
+    id: id,
+    name: uname,
+    userType: userType,
+    createdDate: createdDate,
+    password: password,
+    readingBook: {
+      bookId: bookId,
+      name: name,
+      noOfPages: noOfPages,
+      category: category,
+      author: author,
+      rating: rating,
+    },
+  };
+
+  // Assuming axios is imported properly
+  axios
+    .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
+    .then(function (response) {
+      swal({
+        text: "Added Successful",
+        icon: "success",
+        buttons: {
+          cancel: { text: "Cancel" },
+          confirm: { text: "Ok" },
+        },
       });
-  }
+    })
+    .catch(function (error) {
+      console.log(error);
+      alert("Added Failed");
+    });
+}
   
   return (
     <div>
@@ -104,7 +109,6 @@ const ChildBook = () => {
               </h5>
             </div>
             <div class="card-body">
-              {/* <canvas class="my-4 w-100" id="myChart" height="380"></canvas> */}
               <div className="d-flex justify-content-center align-items-center vh-50">
                 <div
                   className="card card-style"
@@ -132,15 +136,33 @@ const ChildBook = () => {
                         role="progressbar"
                         style={{
                           width: `${
-                            (child?.noOfPagesRead /child?.readingBook?.noOfPages) * 100}%`,
+                            (child?.noOfPagesRead /
+                              child?.readingBook?.noOfPages) *
+                            100
+                          }%`,
                         }}
                         aria-valuenow={(
-                          (child?.noOfPagesRead / child?.readingBook?.noOfPages) * 100).toString()}
+                          (child?.noOfPagesRead /
+                            child?.readingBook?.noOfPages) *
+                          100
+                        ).toString()}
                         aria-valuemin="0"
                         aria-valuemax="100"
                       >
-                        {`${(child?.noOfPagesRead / child?.readingBook?.noOfPages) * 100}%`}
+                        {`${Math.round(
+                          (child?.noOfPagesRead /
+                            child?.readingBook?.noOfPages) *
+                            100
+                        )}%`}
                       </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "grid",
+                        placeItems: "center",
+                      }}
+                    >
+                      <Timer id={id}/>
                     </div>
                   </div>
                 </div>
@@ -164,16 +186,15 @@ const ChildBook = () => {
                 <div className="row">
                   {completedBooks?.map((completedBook) => (
                     <div className="col-md-3" key={completedBook?.bookId}>
-                    <div className="card card-style">
-                      <div className="card-body">
+                      <div className="card card-style">
+                        <div className="card-body">
                           <h5 className="card-title">{completedBook?.name}</h5>
                           <p class="card-text">{completedBook?.author}</p>
                           <p class="card-text">{completedBook?.category}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
                   ))}
-
                 </div>
               </div>
             </div>
@@ -194,24 +215,29 @@ const ChildBook = () => {
                 <div className="row">
                   {books?.map((book) => (
                     <div className="col-md-3" key={book?.bookId}>
-                      <div class="card card-style">
-                        <div class="card-body">
-                          <h5 class="card-title">{book?.name}</h5>
-                          <p class="card-text">{book?.author}</p>
-                          <p class="card-text">{book?.category}</p>
+                      <div className="card card-style">
+                        <div className="card-body">
+                          <h5 className="card-title">{book?.name}</h5>
+                          <p className="card-text">{book?.author}</p>
+                          <p className="card-text">{book?.category}</p>
                           <button
                             type="button"
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             data-mdb-ripple-init
                             onClick={() =>
-                              UpdateUserBook({
-                                bookId: book?.bookId,
-                                name: book?.name,
-                                author: book?.author,
-                                category: book?.category,
-                                rating: book?.rating,
-                                noOfPages: book?.noOfPages,
-                              })
+                              UpdateUserBook(
+                                id, // Assuming you have id available
+                                uname, // Assuming you have uname available
+                                userType, // Assuming you have userType available
+                                createdDate, // Assuming you have createdDate available
+                                password, // Assuming you have password available
+                                book?.bookId,
+                                book?.name,
+                                book?.noOfPages,
+                                book?.category,
+                                book?.author,
+                                book?.rating
+                              )
                             }
                           >
                             Read

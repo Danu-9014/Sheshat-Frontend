@@ -5,15 +5,17 @@ import '../styles.css'
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import swal from "sweetalert";
 
 const ChildBook = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const id = user.id;
   const [child, setChild] = useState(null);
+  const [books, setBooks] = useState([]);
 
   useEffect(()=>{
     axios
-      .get("http://18.205.107.88:31479/api/user/${id}")
+      .get(`http://18.205.107.88:31479/api/user/${id}`)
       .then((response) => {
         setChild(response.data.data);
       })
@@ -21,6 +23,54 @@ const ChildBook = () => {
         console.error("Error fetching user data:", error);
       });
   })
+
+  useEffect(() => {
+    axios
+      .get("http://18.205.107.88:31480/api/book")
+      .then((response) => {
+        setBooks(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  })
+
+  async function UpdateUserBook(e) {
+    e.preventDefault();
+    const userData = {
+      name,
+      rating,
+      category,
+      noOfPages,
+      author,
+      bookId
+    };
+    // console.log(userData,"user");
+      console.log(userData, "userdata");
+      axios
+        .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
+        .then(function (response) {
+          // console.log(response.data.data.userType);
+          localStorage.setItem("user", JSON.stringify(response.data.data));
+          setId("");
+          setPassword("");
+          swal({
+            text: "Added Successful",
+            icon: "success",
+            buttons: {
+              cancel: { text: "Cancel" },
+              confirm: { text: "Ok" },
+            },
+          })
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert("Added Failed");
+        });
+  }
+  
+
+
   return (
     <div>
       <MainNavBar />
@@ -44,8 +94,8 @@ const ChildBook = () => {
                   style={{ width: "75%", minHeight: "200px" }}
                 >
                   <div className="card-body">
-                    <h5 className="card-title">Sherlock Holmes</h5>
-                    <p className="card-text">Arthur Conan Doyle</p>
+                    <h5 className="card-title">{child?.readingBook?.name}</h5>
+                    <p className="card-text">{child?.readingBook?.author}</p>
                     <p className="card-text">
                       <small className="text-muted">
                         Last updated 3 mins ago
@@ -152,15 +202,19 @@ const ChildBook = () => {
             </div>
             <div class="card-body">
               <div className="container mt-4">
+               
                 <div className="row">
-                  <div className="col-md-3">
+                  {books?.map((book) => (
+                  <div className="col-md-3" key={book?.id}>
                     <div class="card card-style">
                       <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                          <h5 class="card-title">{book?.name}</h5>
                         <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
+                            {book?.author}
                         </p>
+                          <p class="card-text">
+                            {book?.category}
+                          </p>
                         <button
                           type="button"
                           class="btn btn-primary"
@@ -171,61 +225,9 @@ const ChildBook = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div class="card card-style">
-                      <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-mdb-ripple-init
-                        >
-                          Read
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div class="card card-style">
-                      <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-mdb-ripple-init
-                        >
-                          Read
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div class="card card-style">
-                      <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-mdb-ripple-init
-                        >
-                          Read
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
+                
               </div>
             </div>
           </div>

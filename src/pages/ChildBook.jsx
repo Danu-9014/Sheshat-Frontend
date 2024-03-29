@@ -42,49 +42,39 @@ const ChildBook = () => {
       });
   },[]);
 
-  async function UpdateUserBook(
-    bookId,
-    name,
-    noOfPages,
-    category,
-    author,
-    rating
-  ) {
-    const userData = {
-      id: id,
-      name: uname,
-      userType: userType,
-      createdDate: createdDate,
-      password: password,
-      readingBook: {
-        bookId: bookId,
-        name: name,
-        noOfPages: noOfPages,
-        category: category,
-        author: author,
-        rating: rating,
-      },
-    };
-    // console.log(userData,"user");
-    console.log(userData, "userdata");
-    axios
-      .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
-      .then(function (response) {
-        // console.log(response.data.data.userType);
-        swal({
-          text: "Added Successful",
-          icon: "success",
-          buttons: {
-            cancel: { text: "Cancel" },
-            confirm: { text: "Ok" },
-          },
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-        alert("Added Failed");
-      });
-  }
+  // async function UpdateUserBook(e) {
+  //   e.preventDefault();
+  //   const userData = {
+  //     name,
+  //     rating,
+  //     category,
+  //     noOfPages,
+  //     author,
+  //     bookId
+  //   };
+  //   // console.log(userData,"user");
+  //     console.log(userData, "userdata");
+  //     axios
+  //       .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
+  //       .then(function (response) {
+  //         // console.log(response.data.data.userType);
+  //         localStorage.setItem("user", JSON.stringify(response.data.data));
+  //         setId("");
+  //         setPassword("");
+  //         swal({
+  //           text: "Added Successful",
+  //           icon: "success",
+  //           buttons: {
+  //             cancel: { text: "Cancel" },
+  //             confirm: { text: "Ok" },
+  //           },
+  //         })
+  //       })
+  //       .catch(function (error) {
+  //         console.log(error);
+  //         alert("Added Failed");
+  //       });
+  // }
   
 
 

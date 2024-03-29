@@ -4,24 +4,9 @@ import { Dropdown, Ripple, initMDB } from "mdb-ui-kit";
 import Navbar from "../components/Navbar";
 import EditUser from "../components/EditUser";
 import DeleteUser from "../components/DeleteUser";
-import { useEffect, useState } from "react";
-import axios from "axios";
 initMDB({ Dropdown, Ripple });
 
 const Children = () => {
-  const [users, setUsers] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("http://18.205.107.88:31479/api/user")
-      .then((response) => {
-        setUsers(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  });
-
   return (
     <div>
       <header>
@@ -254,20 +239,18 @@ const Children = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {users?.map((user) => (
-                        <tr key={user.id}>
-                          <td>{user?.name}</td>
-                          <td>{user?.readingBook?.name}</td>
-                          <td>{user?.noOfPagesRead}</td>
-                          <td>{user?.readingBook?.author}</td>
-                          <td class="icon-space">
-                            {/* <i class="fas fa-trash text-danger mr-2"></i> */}
-                            {/* <i class="fas fa-pencil-alt text-info"></i> */}
-                            <EditUser id={user.id} />
-                            <DeleteUser />
-                          </td>
-                        </tr>
-                      ))}
+                      <tr>
+                        <td>Prathibha</td>
+                        <td>Sherlock Holmes</td>
+                        <td>200</td>
+                        <td>Arthur Conan Doyle</td>
+                        <td class="icon-space">
+                          {/* <i class="fas fa-trash text-danger mr-2"></i> */}
+                          {/* <i class="fas fa-pencil-alt text-info"></i> */}
+                          <EditUser/>
+                          <DeleteUser/>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

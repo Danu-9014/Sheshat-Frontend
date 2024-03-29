@@ -1,53 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import axios from "axios";
 import swal from "sweetalert";
 
-const EditUser = ({id}) => {
+const EditUser = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [show, setShow] = useState(false);
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-    const [userType, setUserType] = useState("Reader");
-
-  const updateShow = () => {
-    axios.get("http://18.205.107.88:31479/api/user/" + id)
-      .then(function (response) {
-        setName(response.data.data.name);
-        setPassword(response.data.data.password);
-        setUserType(response.data.data.userType);
-        setShow(true);
-      })
-  }
-
-  function updateUser(id, name, password, userType) {
-
-    const userData = {
-      id,
-      name,
-      password,
-      userType
-    }
-
-    axios.put("http://18.205.107.88:31479/api/user/" + id, userData)
-      .then(function (response) {
-        console.log(response);
-        setName("");
-        setPassword("");
-        setUserType("");
-        swal({ text: "Successfully Updated", icon: "success" });
-        setShow(false);
-      })
-      .catch(function (error) {
-        console.log(error);
-        alert("Not added");
-      });
-    }
-  
   return (
     <>
-      <button id="mybtn" type="button" onClick={updateShow}>
+      <button id="mybtn" type="button" onClick={handleShow}>
         <i class="fas fa-pencil-alt text-info"></i>
       </button>
 
@@ -71,7 +32,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter User Id "
-                      value={id}
+                    // value={name}
+                    // onChange={(e) => {
+                    //   setName(e.target.value);
+                    // }}
                     disabled
                   />
                 </Col>
@@ -85,10 +49,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter Your Name"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                      }}
+                    // value={address}
+                    // onChange={(e) => {
+                    //   setAddress(e.target.value);
+                    // }}
                   />
                 </Col>
               </Form.Group>
@@ -101,10 +65,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter Password"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
+                    // value={contact_number}
+                    // onChange={(e) => {
+                    //   setContactNumber(e.target.value);
+                    // }}
                   />
                 </Col>
               </Form.Group>
@@ -117,10 +81,7 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="User Type"
-                      value={userType}
-                      onChange={(e) => {
-                        setUserType(e.target.value);
-                      }}
+                    // value={type_of_service}
                   />
                 </Col>
                 <Col sm={3}>
@@ -140,9 +101,7 @@ const EditUser = ({id}) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" type="submit" 
-           //onClick={updateUser(id, name, password, userType)}
-          >
+          <Button variant="success" type="submit">
             Edit
           </Button>
           <Button variant="danger" onClick={handleClose}>

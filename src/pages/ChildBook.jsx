@@ -12,17 +12,11 @@ const ChildBook = () => {
   const id = user.id;
   const [child, setChild] = useState(null);
   const [books, setBooks] = useState([]);
+  const [uname, setName] = useState("");
+  const [userType, setUserType] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [password, setPassword] = useState("");
 
-  useEffect(()=>{
-    axios
-      .get(`http://18.205.107.88:31479/api/user/${id}`)
-      .then((response) => {
-        setChild(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  })
 
   useEffect(() => {
     axios
@@ -31,42 +25,65 @@ const ChildBook = () => {
         setBooks(response.data.data);
       })
       .catch((error) => {
+        console.error("Error fetching book data:", error);
+      });
+
+      axios
+      .get(`http://18.205.107.88:31479/api/user/${id}`)
+      .then((response) => {
+        setChild(response.data.data);
+        setName(response.data.data.name);
+        setUserType(response.data.data.userType);
+        setCreatedDate(response.data.data.createdDate);
+        setPassword(response.data.data.password);
+      })
+      .catch((error) => {
         console.error("Error fetching user data:", error);
       });
-  })
+  },[]);
 
-  async function UpdateUserBook(e) {
-    e.preventDefault();
+  async function UpdateUserBook(
+    bookId,
+    name,
+    noOfPages,
+    category,
+    author,
+    rating
+  ) {
     const userData = {
-      name,
-      rating,
-      category,
-      noOfPages,
-      author,
-      bookId
+      id: id,
+      name: uname,
+      userType: userType,
+      createdDate: createdDate,
+      password: password,
+      readingBook: {
+        bookId: bookId,
+        name: name,
+        noOfPages: noOfPages,
+        category: category,
+        author: author,
+        rating: rating,
+      },
     };
     // console.log(userData,"user");
-      console.log(userData, "userdata");
-      axios
-        .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
-        .then(function (response) {
-          // console.log(response.data.data.userType);
-          localStorage.setItem("user", JSON.stringify(response.data.data));
-          setId("");
-          setPassword("");
-          swal({
-            text: "Added Successful",
-            icon: "success",
-            buttons: {
-              cancel: { text: "Cancel" },
-              confirm: { text: "Ok" },
-            },
-          })
-        })
-        .catch(function (error) {
-          console.log(error);
-          alert("Added Failed");
+    console.log(userData, "userdata");
+    axios
+      .put(`http://18.205.107.88:31479/api/user/${id}`, userData)
+      .then(function (response) {
+        // console.log(response.data.data.userType);
+        swal({
+          text: "Added Successful",
+          icon: "success",
+          buttons: {
+            cancel: { text: "Cancel" },
+            confirm: { text: "Ok" },
+          },
         });
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert("Added Failed");
+      });
   }
   
 
@@ -113,12 +130,16 @@ const ChildBook = () => {
                       <div
                         class="progress-bar"
                         role="progressbar"
-                        style={{ width: "25%" }}
-                        aria-valuenow="25"
+                        style={{
+                          width: `${
+                            (child?.noOfPagesRead /child?.readingBook?.noOfPages) * 100}%`,
+                        }}
+                        aria-valuenow={(
+                          (child?.noOfPagesRead / child?.readingBook?.noOfPages) * 100).toString()}
                         aria-valuemin="0"
                         aria-valuemax="100"
                       >
-                        25%
+                        {`${(child?.noOfPagesRead / child?.readingBook?.noOfPages) * 100}%`}
                       </div>
                     </div>
                   </div>
@@ -202,32 +223,36 @@ const ChildBook = () => {
             </div>
             <div class="card-body">
               <div className="container mt-4">
-               
                 <div className="row">
                   {books?.map((book) => (
-                  <div className="col-md-3" key={book?.id}>
-                    <div class="card card-style">
-                      <div class="card-body">
+                    <div className="col-md-3" key={book?.bookId}>
+                      <div class="card card-style">
+                        <div class="card-body">
                           <h5 class="card-title">{book?.name}</h5>
-                        <p class="card-text">
-                            {book?.author}
-                        </p>
-                          <p class="card-text">
-                            {book?.category}
-                          </p>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-mdb-ripple-init
-                        >
-                          Read
-                        </button>
+                          <p class="card-text">{book?.author}</p>
+                          <p class="card-text">{book?.category}</p>
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-mdb-ripple-init
+                            onClick={() =>
+                              UpdateUserBook({
+                                bookId: book?.bookId,
+                                name: book?.name,
+                                author: book?.author,
+                                category: book?.category,
+                                rating: book?.rating,
+                                noOfPages: book?.noOfPages,
+                              })
+                            }
+                          >
+                            Read
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
                   ))}
                 </div>
-                
               </div>
             </div>
           </div>

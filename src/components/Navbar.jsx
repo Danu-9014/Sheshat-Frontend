@@ -10,7 +10,7 @@ const Navbar = () => {
         <div class="position-sticky">
           <div class="list-group list-group-flush mx-3 mt-4">
             <a
-              href="#"
+              href="/dashboard"
               class="list-group-item list-group-item-action py-2 active"
               data-mdb-ripple-init
             >
@@ -18,7 +18,7 @@ const Navbar = () => {
               <span>Main dashboard</span>
             </a>
             <a
-              href="#"
+              href="/children"
               class="list-group-item list-group-item-action py-2 "
               data-mdb-ripple-init
               aria-current="true"
@@ -27,7 +27,7 @@ const Navbar = () => {
               <span>Children</span>
             </a>
             <a
-              href="#"
+              href="/authors"
               class="list-group-item list-group-item-action py-2"
               data-mdb-ripple-init
             >

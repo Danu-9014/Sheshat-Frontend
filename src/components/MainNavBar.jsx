@@ -7,7 +7,7 @@ const MainNavBar = () => {
 
   function handleLogout() {
     localStorage.removeItem("user");
-    window.location.reload();
+    window.location.href = "/";
   }
   return (
     <nav

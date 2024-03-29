@@ -1,134 +1,10 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import Chart from "chart.js/auto";
-import axios from "axios";
+import React from 'react'
 import logo from "../assets/logo.jpg"; // Initialization for ES Users
 import { Dropdown, Ripple, initMDB } from "mdb-ui-kit";
 import Navbar from "../components/Navbar";
-import ChildDetail from "../components/ChildDetail";
 initMDB({ Dropdown, Ripple });
 
-const Dashboard = () => {
-  const [chartData, setChartData] = useState(null);
-  const [chartInstance, setChartInstance] = useState(null);
-  const [noOfUsers, setNoOfUsers] = useState(0);
-  const [noOfBooks, setNoOfBooks] = useState(0);
-
-  useEffect(() => {
-    axios
-      .get("http://18.205.107.88:31481/api/result")
-      .then((response) => {
-        setChartData(response.data.data);
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (chartData) {
-      generateChart(chartData);
-    }
-  }, [chartData]);
-
-  const generateChart = (data) => {
-    // Object to store total duration and occurrence count for each day
-    const dailyStats = {};
-
-    // Iterate through each result in the data array
-    data.forEach((item) => {
-      const averageSessionDuration = item.averageSessionDuration;
-
-      // Iterate through the averageSessionDuration object
-      Object.keys(averageSessionDuration).forEach((date) => {
-        const day = date.split("T")[0]; // Extract the date without time
-        const duration = parseFloat(averageSessionDuration[date]);
-
-        // Update dailyStats object
-        if (dailyStats[day]) {
-          // If day exists in dailyStats, update total duration and occurrence count
-          dailyStats[day].totalDuration += duration;
-          dailyStats[day].occurrences++;
-        } else {
-          // If day doesn't exist in dailyStats, initialize it with total duration and occurrence count
-          dailyStats[day] = {
-            totalDuration: duration,
-            occurrences: 1,
-          };
-        }
-      });
-    });
-
-    // Calculate average duration for each day
-    const dates = Object.keys(dailyStats).sort(); // Sort dates in ascending order
-    const durations = dates.map(
-      (day) =>
-        dailyStats[day].totalDuration /
-        dailyStats[day].occurrences /
-        (1000 * 60)
-    ); // Convert total duration to average duration in minutes
-
-    // Get canvas element
-    const ctx = document.getElementById("myChart");
-
-    // Destroy existing chart instance
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-
-    // Create new chart instance
-    const newChartInstance = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: dates,
-        datasets: [
-          {
-            label: "Average Session Duration (minutes)",
-            data: durations,
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            ticks: {
-              callback: function (value, index, values) {
-                return value + " mins";
-              },
-            },
-          },
-        },
-      },
-    });
-
-    // Update state with new chart instance
-    setChartInstance(newChartInstance);
-  };
-
-  useEffect(() => {
-    axios
-      .get("http://18.205.107.88:31479/api/user")
-      .then((response) => {
-        setNoOfUsers(response.data.data.length);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-
-    axios
-      .get("http://18.205.107.88:31480/api/book")
-      .then((response) => {
-        setNoOfBooks(response.data.data.length);
-      })
-      .catch((error) => {
-        console.error("Error fetching book data:", error);
-      });
-  }, []);
-
+const Authors = () => {
   return (
     <div>
       <header>
@@ -341,100 +217,63 @@ const Dashboard = () => {
       </header>
       <main style={{ marginTop: "58px" }}>
         <div class="container pt-4">
-          {/* <!-- Section: Main chart --> */}
-          <section class="mb-4">
-            <div class="card">
-              <div class="card-header py-3">
-                <h5 class="mb-0 text-center">
-                  <strong>Average Readings</strong>
-                </h5>
-              </div>
-              <div class="card-body">
-                <canvas class="my-4 w-100" id="myChart" height="100"></canvas>
-              </div>
-            </div>
-          </section>
-          {/* <!-- Section: Main chart -->
-
-            <!--Section: Sales Performance KPIs--> */}
-          <ChildDetail />
-          {/* <!--Section: Sales Performance KPIs-->
-
-            <!--Section: Minimal statistics cards--> */}
-          <section>
-            <div class="row">
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between px-md-1">
-                      <div class="align-self-center">
-                        <i class="fas fa-book-open text-info fa-3x"></i>
-                      </div>
-                      <div class="text-end">
-                        <h3>{noOfBooks}</h3>
-                        <p class="mb-0">Books</p>
-                      </div>
+          <div class="row">
+            <div class="col-xl-3 col-sm-6 col-12 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between px-md-1">
+                    <div>
+                      <h3 class="text-info">278</h3>
+                      <p class="text-info">Average Rating</p>
+                      <h5 class="mb-0">New Posts</h5>
+                    </div>
+                    <div class="align-self-center">
+                      <i class="fas fa-rocket text-info fa-3x"></i>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between px-md-1">
-                      <div>
-                        <h3 class="text-warning">{noOfUsers}</h3>
-                        <p class="mb-0">Children</p>
-                      </div>
-                      <div class="align-self-center">
-                        <i class="far fa-user text-warning fa-3x"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between px-md-1">
-                      <div class="align-self-center">
-                        <i class="far fa-comments text-success fa-3x"></i>
-                      </div>
-                      <div class="text-end">
-                        <h3>5</h3>
-                        <p class="mb-0">Comments</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between px-md-1">
-                      <div class="align-self-center">
-                        <i class="fas fa-chart-line text-danger fa-3x"></i>
-                      </div>
-                      <div class="text-end">
-                        <h3>4</h3>
-                        <p class="mb-0">Current Readings</p>
-                      </div>
+                  <div class="px-md-1">
+                    <div
+                      class="progress mt-3 mb-1 rounded"
+                      style={{ height: "7px" }}
+                    >
+                      <div
+                        class="progress-bar bg-info"
+                        role="progressbar"
+                        style={{ width: "80%" }}
+                        aria-valuenow="80"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* <div class="row">
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
+            {/* <div class="col-xl-3 col-sm-6 col-12 mb-4">
                 <div class="card">
                   <div class="card-body">
                     <div class="d-flex justify-content-between px-md-1">
                       <div>
-                        <h3 class="text-danger">278</h3>
-                        <p class="mb-0">New Projects</p>
+                        <h3 class="text-warning">156</h3>
+                        <p class="mb-0">New Comments</p>
                       </div>
                       <div class="align-self-center">
-                        <i class="fas fa-rocket text-danger fa-3x"></i>
+                        <i class="far fa-comments text-warning fa-3x"></i>
+                      </div>
+                    </div>
+                    <div class="px-md-1">
+                      <div
+                        class="progress mt-3 mb-1 rounded"
+                        style={{ height: "7px" }}
+                      >
+                        <div
+                          class="progress-bar bg-warning"
+                          role="progressbar"
+                          style={{ width: "35%" }}
+                          aria-valuenow="35"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -445,11 +284,26 @@ const Dashboard = () => {
                   <div class="card-body">
                     <div class="d-flex justify-content-between px-md-1">
                       <div>
-                        <h3 class="text-success">156</h3>
-                        <p class="mb-0">Children</p>
+                        <h3 class="text-success">64.89 %</h3>
+                        <p class="mb-0">Bounce Rate</p>
                       </div>
                       <div class="align-self-center">
-                        <i class="far fa-user text-success fa-3x"></i>
+                        <i class="fas fa-mug-hot text-success fa-3x"></i>
+                      </div>
+                    </div>
+                    <div class="px-md-1">
+                      <div
+                        class="progress mt-3 mb-1 rounded"
+                        style={{ height: "7px" }}
+                      >
+                        <div
+                          class="progress-bar bg-success"
+                          role="progressbar"
+                          style={{ width: "60%" }}
+                          aria-valuenow="60"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -460,38 +314,36 @@ const Dashboard = () => {
                   <div class="card-body">
                     <div class="d-flex justify-content-between px-md-1">
                       <div>
-                        <h3 class="text-warning">64</h3>
-                        <p class="mb-0">Books</p>
+                        <h3 class="text-danger">423</h3>
+                        <p class="mb-0">Total Visits</p>
                       </div>
                       <div class="align-self-center">
-                        <i class="fas fa-chart-pie text-warning fa-3x"></i>
+                        <i class="fas fa-map-signs text-danger fa-3x"></i>
+                      </div>
+                    </div>
+                    <div class="px-md-1">
+                      <div
+                        class="progress mt-3 mb-1 rounded"
+                        style={{ height: "7px" }}
+                      >
+                        <div
+                          class="progress-bar bg-danger"
+                          role="progressbar"
+                          style={{ width: "40%" }}
+                          aria-valuenow="40"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 col-12 mb-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between px-md-1">
-                      <div>
-                        <h3 class="text-info">423</h3>
-                        <p class="mb-0">Support Tickets</p>
-                      </div>
-                      <div class="align-self-center">
-                        <i class="far fa-life-ring text-info fa-3x"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-          </section>
-          {/* <!--Section: Minimal statistics cards--> */}
+              </div> */}
+          </div>
         </div>
       </main>
     </div>
   );
-};
+}
 
-export default Dashboard;
+export default Authors

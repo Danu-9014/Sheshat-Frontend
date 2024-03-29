@@ -3,6 +3,12 @@ import logo from "../assets/logo.jpg";
 import { Link } from "react-router-dom";
 
 const MainNavBar = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  function handleLogout() {
+    localStorage.removeItem("user");
+    window.location.reload();
+  }
   return (
     <nav
       id="main-navbar"
@@ -45,26 +51,40 @@ const MainNavBar = () => {
         <ul class="navbar-nav ms-auto d-flex flex-row">
           {/* <!-- Notification dropdown --> */}
           <li class="nav-item dropdown">
-            <Link to={`/login`}>
-              <button
-                type="button"
-                className="btn btn-light me-3"
-                style={{ width: "100px", height: "35px", fontSize: "13px" }}
-              >
-                Login
-              </button>
-            </Link>
-            <Link to={`/register`}>
-              <button
-                type="button"
-                className="btn btn-light me-3"
-                style={{ width: "100px", height: "35px", fontSize: "13px" }}
-              >
-                Sign Up
-              </button>
-            </Link>
+            {user ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-light me-3"
+                  style={{ width: "100px", height: "35px", fontSize: "13px" }}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to={`/login`}>
+                  <button
+                    type="button"
+                    className="btn btn-light me-3"
+                    style={{ width: "100px", height: "35px", fontSize: "13px" }}
+                  >
+                    Login
+                  </button>
+                </Link>
+                <Link to={`/register`}>
+                  <button
+                    type="button"
+                    className="btn btn-light me-3"
+                    style={{ width: "100px", height: "35px", fontSize: "13px" }}
+                  >
+                    Sign Up
+                  </button>
+                </Link>
+              </>
+            )}
           </li>
-
 
           {/* <!-- Avatar --> */}
           <li class="nav-item dropdown">

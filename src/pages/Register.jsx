@@ -8,7 +8,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState("Reader");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -145,7 +145,7 @@ const Register = () => {
                         onChange={(e)=>setUserType(e.target.value)}
                         value={userType}
                       >
-                        <option value="Reader" selected>Reader</option>
+                        <option value="Reader">Reader</option>
                         <option value="Author">Author</option>
                       </select>
                       

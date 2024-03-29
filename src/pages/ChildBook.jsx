@@ -2,8 +2,25 @@ import React from "react";
 import MainNavBar from "../components/MainNavBar";
 import Footer from "../components/Footer";
 import '../styles.css'
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
 
 const ChildBook = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const id = user.id;
+  const [child, setChild] = useState(null);
+
+  useEffect(()=>{
+    axios
+      .get("http://18.205.107.88:31479/api/user/${id}")
+      .then((response) => {
+        setChild(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  })
   return (
     <div>
       <MainNavBar />

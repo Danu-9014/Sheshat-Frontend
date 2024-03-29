@@ -1,10 +1,56 @@
-import React from 'react'
-import MainNavBar from '../components/MainNavBar';
+import React from "react";
+import MainNavBar from "../components/MainNavBar";
+import { useState } from "react";
+import swal from "sweetalert";
+import axios from "axios";
 
 const Login = () => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const userData = {
+      id,
+      password,
+    };
+    // console.log(userData,"user");
+    if (id.length === 0 || password.length === 0) {
+      swal("Fields cannot be empty", "Please enter all data!", "error");
+    } else {
+      console.log(userData, "userdata");
+      axios
+        .post("http://18.205.107.88:31479/api/user/login", userData)
+        .then(function (response) {
+          // console.log(response.data.data.userType);
+          localStorage.setItem("user", JSON.stringify(response.data.data));
+          setId("");
+          setPassword("");
+          swal({
+            text: "Login Successful",
+            icon: "success",
+            buttons: {
+              cancel: { text: "Cancel" },
+              confirm: { text: "Ok" },
+            },
+          }).then(() => {
+            if (response.data.data.userType === "Admin") {
+              window.location.href = "/dashboard";
+            } else {
+              window.location.href = "/";
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert("Login Failed");
+        });
+    }
+  }
+
   return (
     <>
-      <MainNavBar/>
+      <MainNavBar />
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="card" style={{ width: "75%" }}>
           <section className="card-body">
@@ -50,13 +96,15 @@ const Login = () => {
                     {/* <!-- Email input --> */}
                     <div className="form-outline mb-4">
                       <input
-                        type="email"
+                        type="text"
                         id="form3Example3"
                         className="form-control form-control-lg"
-                        placeholder="Enter a valid email address"
+                        placeholder="Enter a valid user Id"
+                        value={id}
+                        onChange={(e) => setId(e.target.value)}
                       />
                       <label className="form-label" htmlFor="form3Example3">
-                        Email address
+                        User Id
                       </label>
                     </div>
                     {/* 
@@ -67,6 +115,8 @@ const Login = () => {
                         id="form3Example4"
                         className="form-control form-control-lg"
                         placeholder="Enter password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       <label className="form-label" htmlFor="form3Example4">
                         Password
@@ -96,9 +146,13 @@ const Login = () => {
 
                     <div className="text-center text-lg-start mt-4 pt-2">
                       <button
-                        type="button"
+                        type="submit"
                         className="btn btn-primary btn-lg"
-                        style={{ paddingLeft: " 2.5rem", paddingRight: "2.5rem" }}
+                        style={{
+                          paddingLeft: " 2.5rem",
+                          paddingRight: "2.5rem",
+                        }}
+                        onClick={handleSubmit}
                       >
                         Login
                       </button>
@@ -118,6 +172,6 @@ const Login = () => {
       </div>
     </>
   );
-}
+};
 
-export default Login
+export default Login;

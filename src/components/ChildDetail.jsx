@@ -1,6 +1,20 @@
 import React from 'react'
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ChildDetail = () => {
+  const [users, setUsers] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("http://18.205.107.88:31479/api/user")
+      .then((response) => {
+        setUsers(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  });
   return (
     <>
       <section class="mb-4">
@@ -15,7 +29,6 @@ const ChildDetail = () => {
               <table class="table table-hover text-nowrap">
                 <thead>
                   <tr>
-                    <th scope="col"></th>
                     <th scope="col">Child Name</th>
                     <th scope="col">Currently Reading Book</th>
                     <th scope="col">No of Pages Read</th>
@@ -23,15 +36,15 @@ const ChildDetail = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">Value</th>
-                    <td>Prathibha</td>
-                    <td>Sherlock Holmes</td>
-                    <td>200</td>
-                    <td>Arthur Conan Doyle</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Absolute change</th>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.name}</td>
+                      <td>{user.book}</td>
+                      <td>{user.pages}</td>
+                      <td>{user.author}</td>
+                    </tr>
+                  ))}
+                  {/* <tr>
                     <td>
                       <span class="text-danger">
                         <i class="fas fa-caret-down me-1"></i>
@@ -56,13 +69,7 @@ const ChildDetail = () => {
                         <span>$1,092.72</span>
                       </span>
                     </td>
-                    <td>
-                      <span class="text-danger">
-                        <i class="fas fa-caret-down me-1"></i>
-                        <span>$-1.78</span>
-                      </span>
-                    </td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </div>

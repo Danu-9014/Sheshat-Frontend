@@ -8,6 +8,8 @@ import { Carousel, initMDB } from "mdb-ui-kit";
 initMDB({ Carousel });
 
 const ChildHome = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  // console.log(user);
   return (
     <div>
       <MainNavBar />
@@ -115,16 +117,29 @@ const ChildHome = () => {
                 <br />
                 <div data-aos="fade-up" data-aos-delay="600">
                   <div className="text-center text-lg-start">
-                    <Link to={`/childbook`}>
-                      <button
-                        type="button"
-                        class="btn btn-outline-danger btn-rounded"
-                        data-mdb-ripple-init
-                        data-mdb-ripple-color="dark"
-                      >
-                        Get Started!
-                      </button>
-                    </Link>
+                    {user ? (
+                      <Link to="/childbook">
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger btn-rounded"
+                          data-mdb-ripple-init
+                          data-mdb-ripple-color="dark"
+                        >
+                          Get Started!
+                        </button>
+                      </Link>
+                    ) : (
+                      <Link to="/login">
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger btn-rounded"
+                          data-mdb-ripple-init
+                          data-mdb-ripple-color="dark"
+                        >
+                          Get Started!
+                        </button>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -148,7 +163,7 @@ const ChildHome = () => {
             <br />
             <br />
 
-            {/* <Link to={`/vehiclefleet`} className="col-md-3 credit-card">
+            {/* <Link to={/vehiclefleet} className="col-md-3 credit-card">
             <div
               id="carouselExampleControls"
               className="carousel slide"
@@ -217,7 +232,7 @@ const ChildHome = () => {
             <br />
             <br />
 
-            {/* <Link to={`/inquiries`} className="col-md-3 credit-card">
+            {/* <Link to={/inquiries} className="col-md-3 credit-card">
             <div
               id="carouselExampleControlss"
               className="carousel slide"
@@ -286,7 +301,7 @@ const ChildHome = () => {
             <br />
             <br />
 
-            {/* <Link to={`/staff`} className="col-md-3 credit-card">
+            {/* <Link to={/staff} className="col-md-3 credit-card">
             <div
               id="carouselExampleControlsss"
               className="carousel slide"

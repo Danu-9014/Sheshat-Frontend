@@ -264,7 +264,7 @@ const Children = () => {
                             {/* <i class="fas fa-trash text-danger mr-2"></i> */}
                             {/* <i class="fas fa-pencil-alt text-info"></i> */}
                             <EditUser id={user.id} />
-                            <DeleteUser />
+                            <DeleteUser id={user.id} />
                           </td>
                         </tr>
                       ))}

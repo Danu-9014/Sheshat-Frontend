@@ -3,34 +3,41 @@ import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import axios from "axios";
 import swal from "sweetalert";
 
-const EditUser = ({id}) => {
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const [show, setShow] = useState(false);
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-    const [userType, setUserType] = useState("Reader");
+const EditUser = ({ id }) => {
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [show, setShow] = useState(false);
+  const [name, setName] = useState("");
+  const [userType, setUserType] = useState("");
+  const [createdDate, setCreatedDate] = useState("");
+  const [password, setPassword] = useState("");
+  const [completedBooks, setCompletedBooks] = useState([]);
 
   const updateShow = () => {
-    axios.get("http://18.205.107.88:31479/api/user/" + id)
+    axios
+      .get("http://18.205.107.88:31479/api/user/" + id)
       .then(function (response) {
         setName(response.data.data.name);
         setPassword(response.data.data.password);
         setUserType(response.data.data.userType);
+        setCreatedDate(response.data.data.createdDate);
+        setCompletedBooks(response.data.data.completedBooks);
         setShow(true);
-      })
-  }
+      });
+  };
 
-  function updateUser(id, name, password, userType) {
-
+  async function updateUser(id, name, password, userType) {
     const userData = {
       id,
       name,
       password,
-      userType
-    }
+      userType,
+      createdDate,
+      completedBooks,
+    };
 
-    axios.put("http://18.205.107.88:31479/api/user/" + id, userData)
+    axios
+      .put("http://18.205.107.88:31479/api/user/" + id, userData)
       .then(function (response) {
         console.log(response);
         setName("");
@@ -43,12 +50,12 @@ const EditUser = ({id}) => {
         console.log(error);
         alert("Not added");
       });
-    }
-  
+  }
+
   return (
     <>
       <button id="mybtn" type="button" onClick={updateShow}>
-        <i class="fas fa-pencil-alt text-info"></i>
+        <i className="fas fa-pencil-alt text-info"></i>
       </button>
 
       <Modal show={show} size="lg" centered>
@@ -59,9 +66,7 @@ const EditUser = ({id}) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <div className="row justify-content-center">
-              
-            </div>
+            <div className="row justify-content-center"></div>
             <Col sm={10}>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm="3">
@@ -71,7 +76,7 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter User Id "
-                      value={id}
+                    value={id}
                     disabled
                   />
                 </Col>
@@ -85,10 +90,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter Your Name"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                      }}
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
                   />
                 </Col>
               </Form.Group>
@@ -101,10 +106,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter Password"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
                   />
                 </Col>
               </Form.Group>
@@ -117,10 +122,10 @@ const EditUser = ({id}) => {
                   <Form.Control
                     type="text"
                     placeholder="User Type"
-                      value={userType}
-                      onChange={(e) => {
-                        setUserType(e.target.value);
-                      }}
+                    value={userType}
+                    onChange={(e) => {
+                      setUserType(e.target.value);
+                    }}
                   />
                 </Col>
                 <Col sm={3}>
@@ -140,8 +145,10 @@ const EditUser = ({id}) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" type="submit" 
-           //onClick={updateUser(id, name, password, userType)}
+          <Button
+            variant="success"
+            type="submit"
+            onClick={() => updateUser(id, name, password, userType)}
           >
             Edit
           </Button>
@@ -152,6 +159,6 @@ const EditUser = ({id}) => {
       </Modal>
     </>
   );
-}
+};
 
-export default EditUser
+export default EditUser;

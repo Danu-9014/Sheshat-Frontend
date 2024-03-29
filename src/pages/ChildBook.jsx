@@ -86,8 +86,6 @@ const ChildBook = () => {
       });
   }
   
-
-
   return (
     <div>
       <MainNavBar />

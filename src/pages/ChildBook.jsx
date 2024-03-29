@@ -16,6 +16,7 @@ const ChildBook = () => {
   const [userType, setUserType] = useState("");
   const [createdDate, setCreatedDate] = useState("");
   const [password, setPassword] = useState("");
+  const [completedBooks, setCompletedBooks] = useState([]);
 
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const ChildBook = () => {
         setUserType(response.data.data.userType);
         setCreatedDate(response.data.data.createdDate);
         setPassword(response.data.data.password);
+        setCompletedBooks(response.data.data.completedBooks);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -160,50 +162,18 @@ const ChildBook = () => {
             <div class="card-body">
               <div className="container mt-4">
                 <div className="row">
-                  <div className="col-md-3">
+                  {completedBooks?.map((completedBook) => (
+                    <div className="col-md-3" key={completedBook?.bookId}>
                     <div className="card card-style">
                       <div className="card-body">
-                        <h5 className="card-title">Card 1</h5>
-                        <p className="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
+                          <h5 className="card-title">{completedBook?.name}</h5>
+                          <p class="card-text">{completedBook?.author}</p>
+                          <p class="card-text">{completedBook?.category}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div className="card card-style">
-                      <div className="card-body">
-                        <h5 className="card-title">Card 2</h5>
-                        <p className="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="card card-style">
-                      <div className="card-body">
-                        <h5 className="card-title">Card 3</h5>
-                        <p className="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="card card-style">
-                      <div className="card-body">
-                        <h5 className="card-title">Card 4</h5>
-                        <p className="card-text">
-                          Some quick example text to build on the card title and
-                          make up the bulk of the card's content.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
+
                 </div>
               </div>
             </div>

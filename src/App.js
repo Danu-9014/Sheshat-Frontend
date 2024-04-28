@@ -10,13 +10,7 @@ import { BrowserRouter, Route, Routes} from 'react-router-dom'
 
 function App() {
   return (
-    // <div className="App">
-    //   {/* <Dashboard /> */}
-    //   {/* <Login/> */}
-    //   {/* <Register/> */}
-    //   {/* <ChildHome/> */}
-    //   <ChildBook/>
-    // </div>
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" name="home" element={<ChildHome />} />
